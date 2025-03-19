@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.admin import GenericTabularInline
-from .models import America
+from .models import America, ComparisonsAmerica
 from apps.common.models import Interior, CarHistory, CarPhoto
 
 
@@ -88,3 +88,10 @@ class AmericaAdmin(admin.ModelAdmin):
                 vin_code="Не указан",
                 carfax_status="clean"
             )
+
+
+@admin.register(ComparisonsAmerica)
+class ComparisonsAmericaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'america_car', 'comparisons']
+    list_filter = ['comparisons']
+    search_fields = ['america_car__brand__name', 'america_car__model__name']

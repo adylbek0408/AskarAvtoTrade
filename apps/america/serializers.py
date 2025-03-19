@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import America
+from .models import America, ComparisonsAmerica
 from apps.common.serializers import (
     CarBrandSerializer, CarModelSerializer, ColorSerializer,
     BodyTypeSerializer, InteriorSerializer, CarHistorySerializer,
@@ -28,3 +28,13 @@ class AmericaSerializer(serializers.ModelSerializer):
 
     def get_time_left(self, obj):
         return obj.time_until_auction()
+
+
+class ComparisonsAmericaSerializer(serializers.ModelSerializer):
+    america_car = AmericaSerializer()
+
+    class Meta:
+        model = ComparisonsAmerica
+        fields = [
+            'id', 'america_car', 'comparisons',
+        ]

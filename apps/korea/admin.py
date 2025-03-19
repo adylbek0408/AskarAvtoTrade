@@ -1,8 +1,15 @@
 from django.contrib import admin
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.admin import GenericTabularInline
-from .models import Korea
+from .models import Korea, ComparisonsKorea
 from apps.common.models import Interior, CarHistory, CarPhoto
+
+
+@admin.register(ComparisonsKorea)
+class ComparisonsKoreaAdmin(admin.ModelAdmin):
+    list_display = ['id', 'korea_car', 'comparisons']
+    list_filter = ['comparisons']
+    search_fields = ['america_car__brand__name', 'america_car__model__name']
 
 
 class InteriorInline(GenericTabularInline):
