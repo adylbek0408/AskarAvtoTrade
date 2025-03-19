@@ -29,6 +29,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'drf_yasg',
+    'django_filters',
 
     'apps.common',
     'apps.america',

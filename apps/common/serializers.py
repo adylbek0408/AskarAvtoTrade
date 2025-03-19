@@ -57,6 +57,8 @@ class CarSerializer(serializers.ModelSerializer):
     model = CarModelSerializer()
     color = ColorSerializer()
     body_type = BodyTypeSerializer()
+    fuel_type = serializers.CharField(source='get_fuel_type_display')
+    transmission_type = serializers.CharField(source='get_transmission_type_display')
     manager = ManagerSerializer()
     interior = InteriorSerializer(source='interior_set.first')
     car_history = CarHistorySerializer(source='carhistory_set.first')

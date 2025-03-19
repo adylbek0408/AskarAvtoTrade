@@ -145,8 +145,8 @@ class Car(models.Model):
 
     brand = models.ForeignKey(CarBrand, on_delete=models.CASCADE, verbose_name="Марка")
     model = models.ForeignKey(CarModel, on_delete=models.CASCADE, verbose_name="Модель")
-    year = models.PositiveIntegerField(verbose_name="Год выпуска")
-    mileage = models.PositiveIntegerField(verbose_name="Пробег (км)")
+    year = models.PositiveIntegerField(verbose_name="Год выпуска", db_index=True)
+    mileage = models.PositiveIntegerField(verbose_name="Пробег (км)", db_index=True)
     engine_volume = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Объем двигателя (л)")
     power = models.PositiveIntegerField(verbose_name="Мощность (л.с.)")
     configuration = models.CharField(max_length=255, verbose_name="Комплектация")
@@ -154,7 +154,7 @@ class Car(models.Model):
     body_type = models.ForeignKey(BodyType, on_delete=models.PROTECT, verbose_name="Тип кузова")
     fuel_type = models.CharField(max_length=20, choices=FUEL_TYPE_CHOICES, verbose_name="Тип топлива")
     transmission_type = models.CharField(max_length=20, choices=TRANSMISSION_TYPE_CHOICES, verbose_name="Тип КПП")
-    start_price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Начальная цена")
+    start_price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Начальная цена", db_index=True)
     end_price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Конечная цена", blank=True,
                                     null=True)
     manager = models.ForeignKey(Manager, on_delete=models.PROTECT, verbose_name="Менеджер")
