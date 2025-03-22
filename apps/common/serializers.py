@@ -43,7 +43,7 @@ class InteriorSerializer(serializers.ModelSerializer):
 class CarHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = CarHistory
-        fields = ['id', 'carfax_status', 'damage_photos', 'vin_code']
+        fields = ['id', 'carfax_status', 'vin_code']
 
 
 class CarPhotoSerializer(serializers.ModelSerializer):

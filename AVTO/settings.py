@@ -2,21 +2,18 @@ import os
 from pathlib import Path
 import environ
 
-
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 env = environ.Env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'jazzmin',
@@ -30,6 +27,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'drf_yasg',
     'django_filters',
+    'corsheaders',
 
     'apps.common',
     'apps.america',
@@ -38,6 +36,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -67,14 +66,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'AVTO.wsgi.application'
 
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('POSTGRES_DB'),
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -91,18 +92,16 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Bishkek'
 
 USE_I18N = True
-
+USE_L10N = True
 USE_TZ = True
-
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
@@ -112,53 +111,127 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+        'rest_framework.filters.SearchFilter',
+    ],
+}
+
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://liderumra.kg",
+    "https://www.liderumra.kg"
+]
+
+CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
+CORS_ALLOW_HEADERS = [
+    'accept', 'accept-encoding', 'authorization', 'content-type', 'dnt',
+    'origin', 'user-agent', 'x-csrftoken', 'x-requested-with', 'accept-language'
+]
+
+CORS_EXPOSE_HEADERS = ['Content-Length', 'X-CSRFToken', 'Access-Control-Allow-Origin']
+CORS_ALLOW_CREDENTIALS = True
+
 JAZZMIN_SETTINGS = {
     "site_title": "Askar Avto",
     "site_header": "Askar Avto",
-    "site_logo": None,
-    "welcome_sign": "Welcome to Askar Avto",
-    "copyright": "Askar Avto",
-    "search_model": ["auth.User"],
-    "topmenu_links": [
-        {"name": "Home", "url": "admin:index", "permissions": ["auth.view_user"]},
-        {"model": "auth.User"},
+    "site_brand": "Askar Avto",
+    "site_logo_classes": "img-circle",
+    "welcome_sign": "Добро пожаловать в администратора Askar Avto",
+    "copyright": "Askar Avto © 2023-2025",
+    "user_avatar": None,
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "sidebar_fixed": True,
+    "sidebar_collapsible": True,
+
+    "order_with_respect_to": [
+        "common",
+        "america",
+        "dubai",
+        "korea",
+        "auth",
     ],
-    "icons": {
-        "auth.User": "fas fa-user",
-        "parser_app.ManagerProfile": "fas fa-user-tie",
-        "parser_app.AuctionCar": "fas fa-car",
+
+    "labels": {
+        "common": "Общее",
+        "america": "Америка",
+        "dubai": "Дубай",
+        "korea": "Корея",
+        "auth": "Аутентификация и Авторизация",
+
     },
+
+    "custom_links": {
+        "common": [
+            {
+                "name": "Панель мониторинга",
+                "url": "admin:index",
+                "icon": "fas fa-tachometer-alt",
+            },
+        ],
+    },
+
+    "icons": {
+        "common.CarBrand": "fas fa-industry",
+        "common.CarModel": "fas fa-car-side",
+        "common.Color": "fas fa-palette",
+        "common.BodyType": "fas fa-car",
+        "common.Manager": "fas fa-user-tie",
+        "common.Interior": "fas fa-couch",
+        "common.CarHistory": "fas fa-history",
+        "common.CarPhoto": "fas fa-camera-retro",
+
+        "america.America": "fas fa-flag-checkered",
+        "america.ComparisonsAmerica": "fas fa-balance-scale",
+
+        "dubai.Dubai": "fas fa-city",
+        "dubai.ComparisonsDubai": "fas fa-balance-scale",
+
+        "korea.Korea": "fas fa-car",
+        "korea.ComparisonsKorea": "fas fa-balance-scale"
+    },
+
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-circle",
+    "related_modal_active": True,
+    "related_modal_back": False,
+    "hide_apps": [],
+    "hide_models": [],
+    "changeform_format": "horizontal_tabs",
+    "custom_css": None,
+    "custom_js": None,
+    "show_ui_builder": False,
 }
+
 
 JAZZMIN_UI_TWEAKS = {
     "navbar_small_text": False,
     "footer_small_text": False,
     "body_small_text": False,
     "brand_small_text": False,
-    "brand_colour": "navbar-dark",
+    "brand_colour": "navbar-primary",
     "accent": "accent-primary",
-    "navbar": "navbar-white navbar-light",
+    "navbar": "navbar-dark",
     "no_navbar_border": False,
-    "navbar_fixed": True,
+    "navbar_fixed": False,
     "layout_boxed": False,
     "footer_fixed": False,
     "sidebar_fixed": True,
-    "sidebar": "sidebar-dark-warning",
+    "sidebar": "sidebar-dark-primary",
     "sidebar_nav_small_text": False,
     "sidebar_disable_expand": False,
     "sidebar_nav_child_indent": False,
     "sidebar_nav_compact_style": False,
-    "sidebar_nav_legacy_style": True,
+    "sidebar_nav_legacy_style": False,
     "sidebar_nav_flat_style": False,
     "theme": "default",
     "dark_mode_theme": None,
-    "button_classes": {
-        "primary": "btn-outline-primary",
-        "secondary": "btn-outline-secondary",
-        "info": "btn-outline-info",
-        "warning": "btn-outline-warning",
-        "danger": "btn-outline-danger",
-        "success": "btn-outline-success",
-    },
-    "actions_sticky_top": True,
 }

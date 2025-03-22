@@ -1,7 +1,6 @@
-# Environment
-.env
-.venv
+# Файлы виртуального окружения
 env/
 venv/
 ENV/
+*.venv/
 

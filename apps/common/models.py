@@ -71,8 +71,8 @@ class Interior(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
 
     STEERING_WHEEL_CHOICES = [
-        ('regular', 'Руль'),
-        ('multi', 'Мультируль'),
+        ('right', 'Правый'),
+        ('left', 'Левый'),
     ]
 
     SEAT_MATERIAL_CHOICES = [
@@ -82,7 +82,7 @@ class Interior(models.Model):
         ('cloth', 'Тряпичный'),
     ]
 
-    steering_wheel = models.CharField(max_length=20, choices=STEERING_WHEEL_CHOICES, verbose_name="Тип руля")
+    steering_wheel = models.CharField(max_length=20, choices=STEERING_WHEEL_CHOICES, verbose_name="Руль")
     interior_color = models.ForeignKey(Color, on_delete=models.PROTECT, related_name='interiors',
                                        verbose_name="Цвет салона")
     seat_material = models.CharField(max_length=20, choices=SEAT_MATERIAL_CHOICES, verbose_name="Материал сидений")
@@ -103,7 +103,6 @@ class CarHistory(models.Model):
     ]
 
     carfax_status = models.CharField(max_length=10, choices=CARFAX_CHOICES, verbose_name="Статус Carfax")
-    damage_photos = models.ImageField(upload_to='cars/damages/', verbose_name="Фото повреждений", blank=True, null=True)
     vin_code = models.CharField(max_length=17, verbose_name="VIN код")
 
     class Meta:
