@@ -99,8 +99,10 @@ class BaseCarAdmin(admin.ModelAdmin):
     inlines = [InteriorInline, CarHistoryInline, CarPhotoInline]
 
     def save_model(self, request, obj, form, change):
+        if not change:
+            obj.url = obj.url or ''
+
         super().save_model(request, obj, form, change)
-        obj.save()
 
         content_type = ContentType.objects.get_for_model(obj)
 

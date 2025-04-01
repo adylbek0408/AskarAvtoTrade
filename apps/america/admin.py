@@ -18,7 +18,6 @@ class AmericaAdmin(BaseCarAdmin):
     form = AmericaForm
 
 
-
 @admin.register(ComparisonsAmerica)
 class ComparisonsAmericaAdmin(admin.ModelAdmin):
     list_display = ['id', 'america_car', 'comparisons']
