@@ -3,7 +3,7 @@ from apps.common.models import Car
 
 
 class America(Car):
-    url = models.URLField(verbose_name='Ссылка на машину', null=True, blank=True)
+    url = models.URLField(verbose_name='Ссылка на машину', null=True, blank=True, default='')
 
     def __str__(self):
         return f"Америка: {self.brand.name} {self.model.name} ({self.year})"
