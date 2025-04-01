@@ -162,14 +162,6 @@ class Car(models.Model):
         default=timezone.now
     )
 
-    def time_until_auction(self):
-        if not self.auction_start_time:  # Handle None case
-            return "Время аукциона не установлено"
-
-        now = timezone.now()
-        if now > self.auction_start_time:
-            return "Аукцион уже начался"
-
     @property
     def interior(self):
         return Interior.objects.filter(
@@ -187,7 +179,7 @@ class Car(models.Model):
     @property
     def photos(self):
         return CarPhoto.objects.filter(
-            content_type=ContentType.objects.get_for_model(self.__class__),
+            content_type=ContentType.objects.get_for_model(self),
             object_id=self.id
         )
 

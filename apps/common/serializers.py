@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Car, CarBrand, CarModel, Color, BodyType, Manager, Interior, CarHistory, CarPhoto
+from django.contrib.contenttypes.models import ContentType
 
 
 class CarBrandSerializer(serializers.ModelSerializer):
@@ -52,27 +53,41 @@ class CarPhotoSerializer(serializers.ModelSerializer):
         fields = ['id', 'image', 'is_main']
 
 
-class CarSerializer(serializers.ModelSerializer):
+class BaseCarSerializer(serializers.ModelSerializer):
+    manager = ManagerSerializer()
     brand = CarBrandSerializer()
     model = CarModelSerializer()
     color = ColorSerializer()
     body_type = BodyTypeSerializer()
-    fuel_type = serializers.CharField(source='get_fuel_type_display')
-    transmission_type = serializers.CharField(source='get_transmission_type_display')
-    manager = ManagerSerializer()
-    interior = InteriorSerializer(source='interior_set.first')
-    car_history = CarHistorySerializer(source='carhistory_set.first')
-    photos = CarPhotoSerializer(many=True, read_only=True)
+    interior = serializers.SerializerMethodField()
+    car_history = serializers.SerializerMethodField()
+    photos = serializers.SerializerMethodField()
     time_left = serializers.SerializerMethodField()
 
-    class Meta:
-        model = Car
-        fields = [
-            'id', 'brand', 'model', 'year', 'mileage', 'engine_volume',
-            'power', 'configuration', 'color', 'body_type', 'fuel_type',
-            'transmission_type', 'start_price', 'end_price', 'manager',
-            'auction_start_time', 'interior', 'car_history', 'photos', 'time_left'
-        ]
+    def get_interior(self, obj):
+        interior = Interior.objects.filter(
+            content_type=ContentType.objects.get_for_model(obj),
+            object_id=obj.id
+        ).first()
+        if interior:
+            return InteriorSerializer(interior).data
+        return None
+
+    def get_car_history(self, obj):
+        history = CarHistory.objects.filter(
+            content_type=ContentType.objects.get_for_model(obj),
+            object_id=obj.id
+        ).first()
+        if history:
+            return CarHistorySerializer(history).data
+        return None
+
+    def get_photos(self, obj):
+        photos = CarPhoto.objects.filter(
+            content_type=ContentType.objects.get_for_model(obj),
+            object_id=obj.id
+        )
+        return CarPhotoSerializer(photos, many=True).data
 
     def get_time_left(self, obj):
         return obj.time_until_auction()

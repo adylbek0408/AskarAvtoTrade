@@ -8,7 +8,7 @@ from django.conf.urls.static import static
 
 schema_view = get_schema_view(
    openapi.Info(
-      title="Car Parser API",
+      title="Car API",
       default_version='v1',
       description="API для парсинга автомобилей с аукционов",
    ),

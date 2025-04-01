@@ -3,7 +3,7 @@ from apps.common.models import Car
 
 
 class Dubai(Car):
-    url = models.URLField(verbose_name='Ссылка на машину')
+    url = models.URLField(verbose_name='Ссылка на машину', null=True, blank=True)
 
     def __str__(self):
         return f"Дубай: {self.brand.name} {self.model.name} ({self.year})"
@@ -23,3 +23,5 @@ class ComparisonsDubai(models.Model):
     class Meta:
         verbose_name = "Сравнение Дубай"
         verbose_name_plural = "Сравнение Дубай"
+
+
