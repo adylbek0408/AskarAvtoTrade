@@ -99,24 +99,8 @@ class BaseCarAdmin(admin.ModelAdmin):
     inlines = [InteriorInline, CarHistoryInline, CarPhotoInline]
 
     def save_model(self, request, obj, form, change):
-        if not change:
-            obj.url = obj.url or ''
-
+        obj.url = obj.url or ''
         super().save_model(request, obj, form, change)
 
         content_type = ContentType.objects.get_for_model(obj)
 
-        if not Interior.objects.filter(content_type=content_type, object_id=obj.id).exists():
-            Interior.objects.create(
-                content_object=obj,
-                interior_color=obj.color,
-                steering_wheel='left',  # Используйте 'left' или 'right'
-                seat_material='leather'
-            )
-
-        if not CarHistory.objects.filter(content_type=content_type, object_id=obj.id).exists():
-            CarHistory.objects.create(
-                content_object=obj,
-                vin_code="Не указан",
-                carfax_status="clean"
-            )

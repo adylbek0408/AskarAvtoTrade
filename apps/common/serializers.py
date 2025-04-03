@@ -1,12 +1,23 @@
 from rest_framework import serializers
 from .models import Car, CarBrand, CarModel, Color, BodyType, Manager, Interior, CarHistory, CarPhoto
 from django.contrib.contenttypes.models import ContentType
+from django.conf import settings
 
 
 class CarBrandSerializer(serializers.ModelSerializer):
+    logo = serializers.SerializerMethodField()
+
     class Meta:
         model = CarBrand
         fields = ['id', 'name', 'logo']
+
+    def get_logo(self, obj):
+        if obj.logo:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.logo.url)
+            return obj.logo.url
+        return None
 
 
 class CarModelSerializer(serializers.ModelSerializer):
@@ -48,9 +59,19 @@ class CarHistorySerializer(serializers.ModelSerializer):
 
 
 class CarPhotoSerializer(serializers.ModelSerializer):
+    image = serializers.SerializerMethodField()
+
     class Meta:
         model = CarPhoto
         fields = ['id', 'image', 'is_main']
+
+    def get_image(self, obj):
+        if obj.image:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.image.url)
+            return obj.image.url
+        return None
 
 
 class BaseCarSerializer(serializers.ModelSerializer):
@@ -87,7 +108,13 @@ class BaseCarSerializer(serializers.ModelSerializer):
             content_type=ContentType.objects.get_for_model(obj),
             object_id=obj.id
         )
-        return CarPhotoSerializer(photos, many=True).data
+        # Важно: здесь мы передаём контекст из родительского сериализатора
+        return CarPhotoSerializer(photos, many=True, context=self.context).data
 
     def get_time_left(self, obj):
         return obj.time_until_auction()
+
+
+
+
+

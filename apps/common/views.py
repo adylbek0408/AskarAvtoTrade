@@ -20,6 +20,11 @@ class BaseCarViewSet(viewsets.ReadOnlyModelViewSet):
             'brand', 'model', 'color', 'body_type', 'manager'
         ).order_by('-auction_start_time')
 
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
 
 class CarBrandViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CarBrand.objects.all()
@@ -28,13 +33,18 @@ class CarBrandViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['name']
 
+    # Добавляем метод get_serializer_context для передачи request в сериализатор
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context['request'] = self.request
+        return context
+
 
 class CarModelViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = CarModel.objects.all().select_related('brand')
     serializer_class = CarModelSerializer
     permission_classes = [AllowAny]
     filter_backends = [DjangoFilterBackend]
-
     filterset_fields = {
         'brand': ['exact'],
         'brand__name': ['icontains'],

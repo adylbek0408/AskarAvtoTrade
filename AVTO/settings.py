@@ -15,6 +15,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+BASE_URL = 'http://109.73.207.12:800'
+
 INSTALLED_APPS = [
     'jazzmin',
     'django.contrib.admin',
