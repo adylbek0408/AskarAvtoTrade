@@ -1,7 +1,7 @@
 from .models import CarBrand, CarModel, Color, BodyType, Manager
 from django.contrib import admin
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.admin import GenericTabularInline
+from django.contrib.contenttypes.models import ContentType
 from .models import Interior, CarHistory, CarPhoto
 
 
@@ -59,6 +59,16 @@ class CarPhotoInline(GenericTabularInline):
     extra = 3
     verbose_name = "Фотография"
     verbose_name_plural = "Фотографии"
+    fields = ('image', 'is_main')  # Explicitly specify which fields to show
+
+    def get_formset(self, request, obj=None, **kwargs):
+        formset = super().get_formset(request, obj, **kwargs)
+        if obj:
+            formset.form.initial = {
+                'content_type': ContentType.objects.get_for_model(obj).pk,
+                'object_id': obj.id
+            }
+        return formset
 
 
 class BaseCarAdmin(admin.ModelAdmin):

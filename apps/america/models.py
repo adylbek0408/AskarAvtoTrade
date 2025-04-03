@@ -10,10 +10,14 @@ class America(Car):
         default=''
     )
 
+    @property
+    def photos(self):
+        return super().get_photos()
+
     def __str__(self):
         return f"Америка: {self.brand.name} {self.model.name} ({self.year})"
 
-    class Meta:
+    class Meta(Car.Meta):
         verbose_name = "Автомобиль из Америки"
         verbose_name_plural = "Автомобили из Америки"
 

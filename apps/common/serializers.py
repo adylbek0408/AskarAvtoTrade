@@ -104,17 +104,11 @@ class BaseCarSerializer(serializers.ModelSerializer):
         return None
 
     def get_photos(self, obj):
-        photos = CarPhoto.objects.filter(
-            content_type=ContentType.objects.get_for_model(obj),
-            object_id=obj.id
-        )
-        # Важно: здесь мы передаём контекст из родительского сериализатора
+        photos = getattr(obj, 'prefetched_photos', None)
+        if not photos:
+            photos = obj.get_photos()
         return CarPhotoSerializer(photos, many=True, context=self.context).data
 
     def get_time_left(self, obj):
         return obj.time_until_auction()
-
-
-
-
 

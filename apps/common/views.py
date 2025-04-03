@@ -1,8 +1,9 @@
+from collections import defaultdict
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny
-from django.db.models import Prefetch
-from .models import CarBrand, CarModel
-from .serializers import BaseCarSerializer, CarBrandSerializer, CarModelSerializer
+from rest_framework.permissions import AllowAny, IsAuthenticatedOrReadOnly
+from django.contrib.contenttypes.models import ContentType
+from .models import CarBrand, CarModel, CarPhoto, Manager
+from .serializers import BaseCarSerializer, CarBrandSerializer, CarModelSerializer, ManagerSerializer
 from django_filters.rest_framework import DjangoFilterBackend
 from .filters import CarFilter
 
@@ -14,16 +15,26 @@ class BaseCarViewSet(viewsets.ReadOnlyModelViewSet):
     filterset_class = CarFilter
 
     def get_queryset(self):
-        # Переопределите этот метод в дочерних классах
-        queryset = super().get_queryset()
-        return queryset.select_related(
+        model = self.queryset.model
+        content_type = ContentType.objects.get_for_model(model)
+        queryset = super().get_queryset().select_related(
             'brand', 'model', 'color', 'body_type', 'manager'
-        ).order_by('-auction_start_time')
+        )
 
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context['request'] = self.request
-        return context
+        car_ids = queryset.values_list('id', flat=True)
+        photos = CarPhoto.objects.filter(
+            content_type=content_type,
+            object_id__in=car_ids
+        )
+
+        photo_map = defaultdict(list)
+        for photo in photos:
+            photo_map[photo.object_id].append(photo)
+
+        for car in queryset:
+            car.prefetched_photos = photo_map.get(car.id, [])
+
+        return queryset.order_by('-auction_start_time')
 
 
 class CarBrandViewSet(viewsets.ReadOnlyModelViewSet):
@@ -33,7 +44,6 @@ class CarBrandViewSet(viewsets.ReadOnlyModelViewSet):
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['name']
 
-    # Добавляем метод get_serializer_context для передачи request в сериализатор
     def get_serializer_context(self):
         context = super().get_serializer_context()
         context['request'] = self.request
@@ -53,3 +63,11 @@ class CarModelViewSet(viewsets.ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return super().get_queryset().order_by('brand__name', 'name')
+
+
+class ManagerViewSet(viewsets.ModelViewSet):
+    queryset = Manager.objects.all()
+    serializer_class = ManagerSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    filter_fields = ['full_name', 'phone_number']
+

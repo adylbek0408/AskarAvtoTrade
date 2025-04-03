@@ -123,6 +123,10 @@ class CarPhoto(models.Model):
     class Meta:
         verbose_name = "Фото автомобиля"
         verbose_name_plural = "Фото автомобилей"
+        # Add this index
+        indexes = [
+            models.Index(fields=['content_type', 'object_id']),
+        ]
 
 
 class Car(models.Model):
@@ -162,6 +166,10 @@ class Car(models.Model):
         default=timezone.now
     )
 
+    def get_photos(self):
+        content_type = ContentType.objects.get_for_model(self)
+        return CarPhoto.objects.filter(content_type=content_type, object_id=self.id)
+
     @property
     def interior(self):
         return Interior.objects.filter(
@@ -175,13 +183,6 @@ class Car(models.Model):
             content_type=ContentType.objects.get_for_model(self),
             object_id=self.id
         ).first()
-
-    @property
-    def photos(self):
-        return CarPhoto.objects.filter(
-            content_type=ContentType.objects.get_for_model(self),
-            object_id=self.id
-        )
 
     def __str__(self):
         return f"{self.brand.name} {self.model.name} ({self.year})"

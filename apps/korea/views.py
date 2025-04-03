@@ -1,6 +1,5 @@
 from apps.common.views import BaseCarViewSet
 from rest_framework import viewsets
-
 from .models import Korea, ComparisonsKorea
 from .serializers import KoreaSerializer, ComparisonsKoreaSerializer
 
