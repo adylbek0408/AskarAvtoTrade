@@ -73,6 +73,7 @@ class Interior(models.Model):
     STEERING_WHEEL_CHOICES = [
         ('right', 'Правый'),
         ('left', 'Левый'),
+        ('center', 'Центральный'),
     ]
 
     SEAT_MATERIAL_CHOICES = [
@@ -80,6 +81,7 @@ class Interior(models.Model):
         ('velour', 'Велюр'),
         ('combined', 'Комбинированный'),
         ('cloth', 'Тряпичный'),
+        ('other', 'Другое'),
     ]
 
     steering_wheel = models.CharField(max_length=20, choices=STEERING_WHEEL_CHOICES, verbose_name="Руль")
@@ -157,9 +159,8 @@ class Car(models.Model):
     body_type = models.ForeignKey(BodyType, on_delete=models.PROTECT, verbose_name="Тип кузова")
     fuel_type = models.CharField(max_length=20, choices=FUEL_TYPE_CHOICES, verbose_name="Тип топлива")
     transmission_type = models.CharField(max_length=20, choices=TRANSMISSION_TYPE_CHOICES, verbose_name="Тип КПП")
-    start_price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Начальная цена", db_index=True)
-    end_price = models.DecimalField(max_digits=12, decimal_places=2, verbose_name="Конечная цена", blank=True,
-                                    null=True)
+    start_price = models.PositiveIntegerField(verbose_name="Начальная цена", db_index=True)
+    end_price = models.PositiveIntegerField(verbose_name="Конечная цена", blank=True, null=True)
     manager = models.ForeignKey(Manager, on_delete=models.PROTECT, verbose_name="Менеджер")
     auction_start_time = models.DateTimeField(
         verbose_name="Время начала аукциона",
