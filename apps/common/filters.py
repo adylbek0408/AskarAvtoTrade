@@ -1,10 +1,23 @@
 import django_filters
 from django import forms
+from django.db.models import Q
 from .models import Car, BodyType, CarBrand
 
 
+class CommaSeparatedModelMultipleChoiceFilter(django_filters.ModelMultipleChoiceFilter):
+    def filter(self, qs, value):
+        if not value:
+            return qs
+
+        return super().filter(qs, value)
+
+    def get_filter_value(self, value):
+        if isinstance(value, str):
+            return value.split(',')
+        return value
+
+
 class CarFilter(django_filters.FilterSet):
-    # Existing filters
     price_from = django_filters.NumberFilter(
         field_name='start_price',
         lookup_expr='gte',
@@ -24,34 +37,38 @@ class CarFilter(django_filters.FilterSet):
         help_text="Диапазон пробега в км"
     )
 
-    # Updated filters for multiple selection
     transmission_type = django_filters.MultipleChoiceFilter(
         choices=Car.TRANSMISSION_TYPE_CHOICES,
-        help_text="Тип КПП",
-        widget=forms.CheckboxSelectMultiple
-    )
-    fuel_type = django_filters.MultipleChoiceFilter(
-        choices=Car.FUEL_TYPE_CHOICES,
-        help_text="Тип топлива",
-        widget=forms.CheckboxSelectMultiple
-    )
-    drive_type = django_filters.MultipleChoiceFilter(
-        choices=Car.DRIVE_TYPE_CHOICES,
-        help_text="Тип привода",
-        widget=forms.CheckboxSelectMultiple
-    )
-    body_type = django_filters.ModelMultipleChoiceFilter(
-        queryset=BodyType.objects.all(),
-        help_text="Тип кузова",
-        widget=forms.CheckboxSelectMultiple
+        help_text="Тип КПП (например, manual,automatic)",
+        widget=forms.CheckboxSelectMultiple,
     )
 
-    # New brand filter
-    brand = django_filters.ModelMultipleChoiceFilter(
-        field_name='brand',
+    fuel_type = django_filters.MultipleChoiceFilter(
+        choices=Car.FUEL_TYPE_CHOICES,
+        help_text="Тип топлива (например, petrol,diesel)",
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    drive_type = django_filters.MultipleChoiceFilter(
+        choices=Car.DRIVE_TYPE_CHOICES,
+        help_text="Тип привода (например, fwd,rwd)",
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    body_type = CommaSeparatedModelMultipleChoiceFilter(
+        field_name='body_type__name',
+        to_field_name='name',
+        queryset=BodyType.objects.all(),
+        help_text="Тип кузова (например, sedan,hatchback)",
+        widget=forms.CheckboxSelectMultiple,
+    )
+
+    brand = CommaSeparatedModelMultipleChoiceFilter(
+        field_name='brand__name',
+        to_field_name='name',
         queryset=CarBrand.objects.all(),
-        help_text="Марка автомобиля",
-        widget=forms.CheckboxSelectMultiple
+        help_text="Марка автомобиля (например, BMW,Audi)",
+        widget=forms.CheckboxSelectMultiple,
     )
 
     ordering = django_filters.OrderingFilter(
