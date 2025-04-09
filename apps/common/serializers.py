@@ -6,17 +6,19 @@ from django.conf import settings
 
 class CarBrandSerializer(serializers.ModelSerializer):
     logo = serializers.SerializerMethodField()
-
+    
     class Meta:
         model = CarBrand
         fields = ['id', 'name', 'logo']
-
+    
     def get_logo(self, obj):
         if obj.logo:
             request = self.context.get('request')
             if request:
-                return request.build_absolute_uri(obj.logo.url)
-            return obj.logo.url
+                url = request.build_absolute_uri(obj.logo.url)
+                url = url.replace(f'://{request.get_host()}', f'://{request.get_host().split(":")[0]}:800')
+                return url
+            return f'http://109.73.207.12:800{obj.logo.url}'
         return None
 
 
@@ -60,17 +62,22 @@ class CarHistorySerializer(serializers.ModelSerializer):
 
 class CarPhotoSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
-
+    
     class Meta:
         model = CarPhoto
         fields = ['id', 'image', 'is_main']
-
+    
     def get_image(self, obj):
         if obj.image:
             request = self.context.get('request')
             if request:
-                return request.build_absolute_uri(obj.image.url)
-            return obj.image.url
+                # Get the base URL with the correct port
+                url = request.build_absolute_uri(obj.image.url)
+                # Replace the default port with port 800
+                url = url.replace(f'://{request.get_host()}', f'://{request.get_host().split(":")[0]}:800')
+                return url
+            # If no request available, construct URL manually
+            return f'http://109.73.207.12:800{obj.image.url}'
         return None
 
 
@@ -84,6 +91,10 @@ class BaseCarSerializer(serializers.ModelSerializer):
     car_history = serializers.SerializerMethodField()
     photos = serializers.SerializerMethodField()
     time_left = serializers.SerializerMethodField()
+    drive_type = serializers.SerializerMethodField()
+
+    def get_drive_type(self, obj):
+        return obj.get_drive_type_display()
 
     def get_interior(self, obj):
         interior = Interior.objects.filter(

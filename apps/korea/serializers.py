@@ -9,7 +9,7 @@ class KoreaSerializer(BaseCarSerializer):
         fields = [
             'id', 'manager', 'brand', 'model', 'year', 'mileage', 'engine_volume',
             'power', 'configuration', 'color', 'body_type', 'fuel_type',
-            'transmission_type', 'start_price', 'end_price', 'auction_start_time',
+            'transmission_type', 'drive_type', 'start_price', 'end_price', 'auction_start_time',
             'interior', 'car_history', 'photos', 'url', 'time_left'
         ]
 

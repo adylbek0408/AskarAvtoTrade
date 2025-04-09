@@ -2,7 +2,7 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import AmericaViewSet, ComparisonsAmericaViewSet
 from apps.common.views import CarBrandViewSet, CarModelViewSet, ManagerViewSet
-
+from .api_views import CarsByIdsView
 
 app_name = 'america'
 
@@ -16,4 +16,5 @@ router.register(r'comparisons-america', ComparisonsAmericaViewSet, basename='ame
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('api/cars/by-ids/', CarsByIdsView.as_view(), name='cars-by-ids'),
 ]

@@ -75,36 +75,38 @@ class BaseCarAdmin(admin.ModelAdmin):
     @admin.display(description='До начала аукциона')
     def time_until_auction(self, obj):
         return obj.time_until_auction()
-
     list_display = ('__str__', 'year', 'mileage', 'start_price', 'auction_start_time', 'time_until_auction')
     list_filter = ('brand', 'model', 'year', 'body_type', 'fuel_type', 'transmission_type')
     search_fields = ('brand__name', 'model__name', 'configuration', 'car_history__vin_code')
     readonly_fields = ('time_until_auction',)
 
     fieldsets = (
-        ('Основная информация', {
-            'fields': (
-                ('brand', 'model'),
-                'year',
-                'mileage',
-                'configuration',
-                ('engine_volume', 'power'),
-                ('color', 'body_type'),
-                ('fuel_type', 'transmission_type'),
-            )
-        }),
-        ('Цена и аукцион', {
-            'fields': (
-                ('start_price', 'end_price'),
-                'manager',
-                'auction_start_time',
-                'time_until_auction',
-            )
-        }),
-        ('Ссылки', {
-            'fields': ('url',),
-        }),
+    ('Основная информация', {
+        'fields': (
+            ('brand', 'model'),
+            'year',
+            'mileage',
+            'configuration',
+            'engine_volume',
+            'power',
+            'color',
+            ('fuel_type', 'body_type'),
+            ('transmission_type', 'drive_type')
+        )
+    }),
+    ('Цена и аукцион', {
+        'fields': (
+            ('start_price', 'end_price'),
+            'manager',
+            'auction_start_time',
+            'time_until_auction',
+        )
+    }),
+    ('Ссылки', {
+        'fields': ('url',),
+    }),
     )
+
 
     inlines = [InteriorInline, CarHistoryInline, CarPhotoInline]
 

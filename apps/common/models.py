@@ -87,7 +87,7 @@ class Interior(models.Model):
     steering_wheel = models.CharField(max_length=20, choices=STEERING_WHEEL_CHOICES, verbose_name="Руль")
     interior_color = models.ForeignKey(Color, on_delete=models.PROTECT, related_name='interiors',
                                        verbose_name="Цвет салона")
-    seat_material = models.CharField(max_length=20, choices=SEAT_MATERIAL_CHOICES, verbose_name="Материал сидений")
+    seat_material = models.CharField(max_length=20, choices=SEAT_MATERIAL_CHOICES, verbose_name="Материал сидений", null=True, blank=True)
 
     class Meta:
         verbose_name = "Интерьер"
@@ -125,7 +125,6 @@ class CarPhoto(models.Model):
     class Meta:
         verbose_name = "Фото автомобиля"
         verbose_name_plural = "Фото автомобилей"
-        # Add this index
         indexes = [
             models.Index(fields=['content_type', 'object_id']),
         ]
@@ -147,18 +146,26 @@ class Car(models.Model):
         ('variator', 'Вариатор'),
         ('dsg', 'DSG (Робот с двойным сцеплением)'),
     ]
+    
+    DRIVE_TYPE_CHOICES = [
+        ('fwd', 'Передний'),
+        ('rwd', 'Задний'),
+        ('awd', 'Полный'),
+        ('plug_in', 'Подключаемый'),
+    ]
 
     brand = models.ForeignKey(CarBrand, on_delete=models.CASCADE, verbose_name="Марка")
     model = models.ForeignKey(CarModel, on_delete=models.CASCADE, verbose_name="Модель")
     year = models.PositiveIntegerField(verbose_name="Год выпуска", db_index=True)
-    mileage = models.PositiveIntegerField(verbose_name="Пробег (км)", db_index=True)
-    engine_volume = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Объем двигателя (л)")
-    power = models.PositiveIntegerField(verbose_name="Мощность (л.с.)")
+    mileage = models.PositiveIntegerField(verbose_name="Пробег (км)", db_index=True, help_text="Введите пробег автомобиля в километрах, например: 100000")
+    engine_volume = models.DecimalField(max_digits=3, decimal_places=1, verbose_name="Объем двигателя (л)", help_text="Введите объем двигателя в литрах, например: 4.4" )
+    power = models.PositiveIntegerField(verbose_name="Мощность (л.с.)", help_text="Введите мощность двигателя в лошадиных силах, например: 150" )
     configuration = models.CharField(max_length=255, verbose_name="Комплектация")
     color = models.ForeignKey(Color, on_delete=models.PROTECT, verbose_name="Цвет")
     body_type = models.ForeignKey(BodyType, on_delete=models.PROTECT, verbose_name="Тип кузова")
     fuel_type = models.CharField(max_length=20, choices=FUEL_TYPE_CHOICES, verbose_name="Тип топлива")
     transmission_type = models.CharField(max_length=20, choices=TRANSMISSION_TYPE_CHOICES, verbose_name="Тип КПП")
+    drive_type = models.CharField(max_length=20, choices=DRIVE_TYPE_CHOICES, verbose_name="Привод")
     start_price = models.PositiveIntegerField(verbose_name="Начальная цена", db_index=True)
     end_price = models.PositiveIntegerField(verbose_name="Конечная цена", blank=True, null=True)
     manager = models.ForeignKey(Manager, on_delete=models.PROTECT, verbose_name="Менеджер")
