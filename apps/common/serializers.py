@@ -31,7 +31,7 @@ class CarModelSerializer(serializers.ModelSerializer):
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
-        fields = ['id', 'name', 'hex_code']
+        fields = ['id', 'name']
 
 
 class BodyTypeSerializer(serializers.ModelSerializer):

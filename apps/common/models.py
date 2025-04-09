@@ -31,7 +31,6 @@ class CarModel(models.Model):
 
 class Color(models.Model):
     name = models.CharField(max_length=50, verbose_name="Название цвета")
-    hex_code = models.CharField(max_length=7, verbose_name="Код цвета (HEX)", blank=True, null=True)
 
     def __str__(self):
         return self.name

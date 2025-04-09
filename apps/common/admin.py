@@ -20,7 +20,7 @@ class CarModelAdmin(admin.ModelAdmin):
 
 @admin.register(Color)
 class ColorAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'hex_code']
+    list_display = ['id', 'name']
     search_fields = ['name']
 
 
