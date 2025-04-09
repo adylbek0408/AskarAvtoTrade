@@ -1,5 +1,4 @@
 # Python
-__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -42,4 +41,5 @@ ENV/
 *.swo
 
 *.pyc
-__pycache__/
+__pycache__
+

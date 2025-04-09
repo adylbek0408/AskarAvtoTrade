@@ -1,9 +1,10 @@
-# Complete filters.py
 import django_filters
-from .models import Car, BodyType
+from django import forms
+from .models import Car, BodyType, CarBrand
 
 
 class CarFilter(django_filters.FilterSet):
+    # Existing filters
     price_from = django_filters.NumberFilter(
         field_name='start_price',
         lookup_expr='gte',
@@ -22,25 +23,35 @@ class CarFilter(django_filters.FilterSet):
         field_name='mileage',
         help_text="Диапазон пробега в км"
     )
-    transmission_type = django_filters.ChoiceFilter(
-        choices=Car.TRANSMISSION_TYPE_CHOICES,
-        help_text="Тип КПП"
-    )
-    fuel_type = django_filters.ChoiceFilter(
-        choices=Car.FUEL_TYPE_CHOICES,
-        help_text="Тип топлива"
-    )
-    body_type = django_filters.ModelChoiceFilter(
-        field_name='body_type__name',
-        queryset=BodyType.objects.all(),
-        label="Кузов",
-        help_text="Тип кузова"
-    )
 
-    drive_type = django_filters.ChoiceFilter(
+    # Updated filters for multiple selection
+    transmission_type = django_filters.MultipleChoiceFilter(
+        choices=Car.TRANSMISSION_TYPE_CHOICES,
+        help_text="Тип КПП",
+        widget=forms.CheckboxSelectMultiple
+    )
+    fuel_type = django_filters.MultipleChoiceFilter(
+        choices=Car.FUEL_TYPE_CHOICES,
+        help_text="Тип топлива",
+        widget=forms.CheckboxSelectMultiple
+    )
+    drive_type = django_filters.MultipleChoiceFilter(
         choices=Car.DRIVE_TYPE_CHOICES,
         help_text="Тип привода",
-        label="Привод"
+        widget=forms.CheckboxSelectMultiple
+    )
+    body_type = django_filters.ModelMultipleChoiceFilter(
+        queryset=BodyType.objects.all(),
+        help_text="Тип кузова",
+        widget=forms.CheckboxSelectMultiple
+    )
+
+    # New brand filter
+    brand = django_filters.ModelMultipleChoiceFilter(
+        field_name='brand',
+        queryset=CarBrand.objects.all(),
+        help_text="Марка автомобиля",
+        widget=forms.CheckboxSelectMultiple
     )
 
     ordering = django_filters.OrderingFilter(
