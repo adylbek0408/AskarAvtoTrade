@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Car, CarBrand, CarModel, Color, BodyType, Manager, Interior, CarHistory, CarPhoto
+from .models import Car, CarBrand, CarModel, Color, Manager, Interior, CarHistory, CarPhoto
 from django.contrib.contenttypes.models import ContentType
 from django.conf import settings
 
@@ -31,12 +31,6 @@ class CarModelSerializer(serializers.ModelSerializer):
 class ColorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Color
-        fields = ['id', 'name']
-
-
-class BodyTypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = BodyType
         fields = ['id', 'name']
 
 
@@ -86,15 +80,18 @@ class BaseCarSerializer(serializers.ModelSerializer):
     brand = CarBrandSerializer()
     model = CarModelSerializer()
     color = ColorSerializer()
-    body_type = BodyTypeSerializer()
     interior = serializers.SerializerMethodField()
     car_history = serializers.SerializerMethodField()
     photos = serializers.SerializerMethodField()
     time_left = serializers.SerializerMethodField()
-    drive_type = serializers.SerializerMethodField()
-
-    def get_drive_type(self, obj):
-        return obj.get_drive_type_display()
+    # drive_type = serializers.SerializerMethodField()
+    # body_type_choices = serializers.SerializerMethodField()
+    #
+    # def get_drive_type(self, obj):
+    #     return obj.get_drive_type_display()
+    #
+    # def get_body_type_choices(self, obj):
+    #     return obj.get_body_type_display()
 
     def get_interior(self, obj):
         interior = Interior.objects.filter(

@@ -1,4 +1,4 @@
-from .models import CarBrand, CarModel, Color, BodyType, Manager
+from .models import CarBrand, CarModel, Color, Manager
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
 from django.contrib.contenttypes.models import ContentType
@@ -20,12 +20,6 @@ class CarModelAdmin(admin.ModelAdmin):
 
 @admin.register(Color)
 class ColorAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name']
-    search_fields = ['name']
-
-
-@admin.register(BodyType)
-class BodyTypeAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
     search_fields = ['name']
 
@@ -76,7 +70,7 @@ class BaseCarAdmin(admin.ModelAdmin):
     def time_until_auction(self, obj):
         return obj.time_until_auction()
     list_display = ('__str__', 'year', 'mileage', 'start_price', 'auction_start_time', 'time_until_auction')
-    list_filter = ('brand', 'model', 'year', 'body_type', 'fuel_type', 'transmission_type')
+    list_filter = ('brand', 'model', 'year', 'fuel_type', 'transmission_type')
     search_fields = ('brand__name', 'model__name', 'configuration', 'car_history__vin_code')
     readonly_fields = ('time_until_auction',)
 
@@ -90,7 +84,7 @@ class BaseCarAdmin(admin.ModelAdmin):
             'engine_volume',
             'power',
             'color',
-            ('fuel_type', 'body_type'),
+            ('fuel_type', 'body_type_choices'),
             ('transmission_type', 'drive_type')
         )
     }),
@@ -106,7 +100,6 @@ class BaseCarAdmin(admin.ModelAdmin):
         'fields': ('url',),
     }),
     )
-
 
     inlines = [InteriorInline, CarHistoryInline, CarPhotoInline]
 

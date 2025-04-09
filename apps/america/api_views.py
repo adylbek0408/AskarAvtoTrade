@@ -32,13 +32,13 @@ class CarsByIdsView(APIView):
         
         # Предзагрузка связанных объектов
         america_cars = America.objects.filter(id__in=ids).select_related(
-            'brand', 'model', 'color', 'body_type', 'manager'
+            'brand', 'model', 'color', 'manager'
         )
         korea_cars = Korea.objects.filter(id__in=ids).select_related(
-            'brand', 'model', 'color', 'body_type', 'manager'
+            'brand', 'model', 'color', 'manager'
         )
         dubai_cars = Dubai.objects.filter(id__in=ids).select_related(
-            'brand', 'model', 'color', 'body_type', 'manager'
+            'brand', 'model', 'color', 'manager'
         )
         
         # Получаем ContentTypes для всех моделей

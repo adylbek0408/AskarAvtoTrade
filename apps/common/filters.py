@@ -1,7 +1,7 @@
 import django_filters
 from django import forms
 from django.db.models import Q
-from .models import Car, BodyType, CarBrand
+from .models import Car, CarBrand
 
 
 class CommaSeparatedModelMultipleChoiceFilter(django_filters.ModelMultipleChoiceFilter):
@@ -52,14 +52,6 @@ class CarFilter(django_filters.FilterSet):
     drive_type = django_filters.MultipleChoiceFilter(
         choices=Car.DRIVE_TYPE_CHOICES,
         help_text="Тип привода (например, fwd,rwd)",
-        widget=forms.CheckboxSelectMultiple,
-    )
-
-    body_type = CommaSeparatedModelMultipleChoiceFilter(
-        field_name='body_type__name',
-        to_field_name='name',
-        queryset=BodyType.objects.all(),
-        help_text="Тип кузова (например, sedan,hatchback)",
         widget=forms.CheckboxSelectMultiple,
     )
 

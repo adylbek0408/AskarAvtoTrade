@@ -40,17 +40,6 @@ class Color(models.Model):
         verbose_name_plural = "Цвета"
 
 
-class BodyType(models.Model):
-    name = models.CharField(max_length=50, verbose_name="Тип кузова")
-
-    def __str__(self):
-        return self.name
-
-    class Meta:
-        verbose_name = "Тип кузова"
-        verbose_name_plural = "Типы кузовов"
-
-
 class Manager(models.Model):
     full_name = models.CharField(max_length=100, verbose_name="ФИО")
     phone_number = models.CharField(max_length=20, verbose_name="Номер телефона")
@@ -130,6 +119,25 @@ class CarPhoto(models.Model):
 
 
 class Car(models.Model):
+    BODY_TYPE_CHOICES = [
+        ("sedan", "Седан"),
+        ("wagon", "Универсал"),
+        ("crossover", "Кроссовер"),
+        ("hatchback", "Хэтчбек"),
+        ("coupe", "Купе"),
+        ("convertible", "Кабриолет"),
+        ("liftback", "Лифтбек"),
+        ("pickup", "Пикап"),
+        ("minivan", "Минивэн"),
+        ("van", "Фургон"),
+        ("roadster", "Родстер"),
+        ("targa", "Тарга"),
+        ("limousine", "Лимузин"),
+        ("microvan", "Микровэн"),
+        ("suv", "Внедорожник"),
+        ('other', 'Другое'),
+    ]
+
     FUEL_TYPE_CHOICES = [
         ('petrol', 'Бензин'),
         ('diesel', 'Дизель'),
@@ -161,7 +169,7 @@ class Car(models.Model):
     power = models.PositiveIntegerField(verbose_name="Мощность (л.с.)", help_text="Введите мощность двигателя в лошадиных силах, например: 150" )
     configuration = models.CharField(max_length=255, verbose_name="Комплектация")
     color = models.ForeignKey(Color, on_delete=models.PROTECT, verbose_name="Цвет")
-    body_type = models.ForeignKey(BodyType, on_delete=models.PROTECT, verbose_name="Тип кузова")
+    body_type_choices = models.CharField(max_length=30, choices=BODY_TYPE_CHOICES, verbose_name="Тип кузова")
     fuel_type = models.CharField(max_length=20, choices=FUEL_TYPE_CHOICES, verbose_name="Тип топлива")
     transmission_type = models.CharField(max_length=20, choices=TRANSMISSION_TYPE_CHOICES, verbose_name="Тип КПП")
     drive_type = models.CharField(max_length=20, choices=DRIVE_TYPE_CHOICES, verbose_name="Привод")

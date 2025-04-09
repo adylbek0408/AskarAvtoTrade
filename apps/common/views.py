@@ -18,7 +18,7 @@ class BaseCarViewSet(viewsets.ReadOnlyModelViewSet):
         model = self.queryset.model
         content_type = ContentType.objects.get_for_model(model)
         queryset = super().get_queryset().select_related(
-            'brand', 'model', 'color', 'body_type', 'manager'
+            'brand', 'model', 'color', 'manager'
         )
 
         car_ids = queryset.values_list('id', flat=True)
