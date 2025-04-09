@@ -55,6 +55,12 @@ class CarFilter(django_filters.FilterSet):
         widget=forms.CheckboxSelectMultiple,
     )
 
+    body_type_choices = django_filters.MultipleChoiceFilter(
+        choices=Car.BODY_TYPE_CHOICES,
+        help_text="Тип кузова (например, sedan,hatchback)",
+        widget=forms.CheckboxSelectMultiple,
+    )
+
     brand = CommaSeparatedModelMultipleChoiceFilter(
         field_name='brand__name',
         to_field_name='name',
