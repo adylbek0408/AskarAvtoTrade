@@ -33,9 +33,16 @@ class CarFilter(django_filters.FilterSet):
     body_type = django_filters.ModelChoiceFilter(
         field_name='body_type__name',
         queryset=BodyType.objects.all(),
-        label="Body Type",
+        label="Кузов",
         help_text="Тип кузова"
     )
+
+    drive_type = django_filters.ChoiceFilter(
+        choices=Car.DRIVE_TYPE_CHOICES,
+        help_text="Тип привода",
+        label="Привод"
+    )
+
     ordering = django_filters.OrderingFilter(
         fields=(
             ('start_price', 'price'),
