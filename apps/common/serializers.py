@@ -10,15 +10,15 @@ class CarBrandSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarBrand
         fields = ['id', 'name', 'logo']
-    
+
     def get_logo(self, obj):
         if obj.logo:
             request = self.context.get('request')
             if request:
                 url = request.build_absolute_uri(obj.logo.url)
-                url = url.replace(f'://{request.get_host()}', f'://{request.get_host().split(":")[0]}:800')
+                url = url.replace(f'://{request.get_host()}', f'://{request.get_host().split(":")[0]}')
                 return url
-            return f'http://109.73.207.12:800{obj.logo.url}'
+            return f'http://65.1.108.172{obj.logo.url}'
         return None
 
 
@@ -60,18 +60,18 @@ class CarPhotoSerializer(serializers.ModelSerializer):
     class Meta:
         model = CarPhoto
         fields = ['id', 'image', 'is_main']
-    
+
     def get_image(self, obj):
         if obj.image:
             request = self.context.get('request')
             if request:
                 # Get the base URL with the correct port
                 url = request.build_absolute_uri(obj.image.url)
-                # Replace the default port with port 800
-                url = url.replace(f'://{request.get_host()}', f'://{request.get_host().split(":")[0]}:800')
+                # Replace with the correct host without port
+                url = url.replace(f'://{request.get_host()}', f'://{request.get_host().split(":")[0]}')
                 return url
             # If no request available, construct URL manually
-            return f'http://109.73.207.12:800{obj.image.url}'
+            return f'http://65.1.108.172{obj.image.url}'
         return None
 
 

@@ -126,18 +126,22 @@ REST_FRAMEWORK = {
 }
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://109.73.207.12:800", 
-    "https://109.73.207.12:800", 
+    "http://65.1.108.172",
+    "https://65.1.108.172",
+    "http://ec2-65-1-108-172.ap-south-1.compute.amazonaws.com",
+    "https://ec2-65-1-108-172.ap-south-1.compute.amazonaws.com"
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "http://109.73.207.12",
-    "http://109.73.207.12:800",
-    "http://109.73.207.12:3000"
- ]
+    "http://65.1.108.172",
+    "http://65.1.108.172:3000",
+    "http://ec2-65-1-108-172.ap-south-1.compute.amazonaws.com",
+    "http://ec2-65-1-108-172.ap-south-1.compute.amazonaws.com:3000"
+]
 
 CORS_ALLOW_METHODS = ['DELETE', 'GET', 'OPTIONS', 'PATCH', 'POST', 'PUT']
 CORS_ALLOW_HEADERS = [
