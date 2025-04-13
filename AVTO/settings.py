@@ -15,7 +15,7 @@ DEBUG = True
 
 # ALLOWED_HOSTS = ['*']
 
-ALLOWED_HOSTS = ['65.1.108.172', 'ec2-65-1-108-172.ap-south-1.compute.amazonaws.com', 'localhost']
+ALLOWED_HOSTS = ['*', '65.1.108.172', '65.1.108.172,65.1.108.172', 'ec2-65-1-108-172.ap-south-1.compute.amazonaws.com', 'localhost']
 
 BASE_URL = 'http://109.73.207.12:800'
 
