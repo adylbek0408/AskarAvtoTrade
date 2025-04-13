@@ -13,7 +13,9 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS = ['65.1.108.172', 'ec2-65-1-108-172.ap-south-1.compute.amazonaws.com', 'localhost']
 
 BASE_URL = 'http://109.73.207.12:800'
 
